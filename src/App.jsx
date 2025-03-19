@@ -14,24 +14,54 @@ import { Toaster } from "@/components/ui/sonner"
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
   useEffect(() => {
     // Check if user is logged in from localStorage
-    const userLoggedIn = localStorage.getItem("sharekart-user")
-    if (userLoggedIn) {
-      setIsLoggedIn(true)
+    const checkAuthStatus = () => {
+      const userLoggedIn = localStorage.getItem("sharekart-user")
+      const sessionExpiry = localStorage.getItem("sharekart-session-expiry")
+
+      if (userLoggedIn && sessionExpiry) {
+        // Check if session has expired
+        const expiryDate = new Date(sessionExpiry)
+        const now = new Date()
+
+        if (now < expiryDate) {
+          setIsLoggedIn(true)
+        } else {
+          // Session expired, clear localStorage
+          localStorage.removeItem("sharekart-user")
+          localStorage.removeItem("sharekart-session-expiry")
+          setIsLoggedIn(false)
+        }
+      } else {
+        setIsLoggedIn(false)
+      }
+
+      setIsCheckingAuth(false)
     }
+
+    checkAuthStatus()
   }, [])
 
   const handleLogin = () => {
-    // Mock login functionality
-    localStorage.setItem("sharekart-user", JSON.stringify({ id: 1, name: "User" }))
     setIsLoggedIn(true)
   }
 
   const handleLogout = () => {
     localStorage.removeItem("sharekart-user")
+    localStorage.removeItem("sharekart-session-expiry")
     setIsLoggedIn(false)
+  }
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    )
   }
 
   return (
@@ -49,7 +79,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         )}
       </Routes>

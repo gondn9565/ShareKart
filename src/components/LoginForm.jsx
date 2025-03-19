@@ -1,69 +1,137 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "sonner"
+import { isValidEmail } from "@/lib/utils"
 
 function LoginForm({ onLogin }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // In a real app, you would validate credentials
-    // For this demo, we'll just call onLogin
-    onLogin()
+
+    if (!validateForm()) return
+
+    setIsLoading(true)
+
+    try {
+      // Simulating a successful login (Replace with real API call)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Store user in localStorage
+      const user = {
+        id: 1,
+        name: "User",
+        email: email,
+        rememberMe: rememberMe,
+      }
+
+      localStorage.setItem("sharekart-user", JSON.stringify(user))
+
+      // If "Remember Me" is checked, set a longer expiration
+      const expiryTime = rememberMe
+        ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
+        : Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+
+      localStorage.setItem("sharekart-session-expiry", expiryTime.toString())
+
+      toast.success("Login successful! Welcome back to ShareKart!")
+
+      onLogin()
+    } catch (error) {
+      toast.error("Login failed! Invalid email or password. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-2xl">Login to ShareKart</CardTitle>
-        <CardDescription>Enter your credentials to access your account</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <Button className="w-full mt-6" type="submit">
-            Sign In
+    <form onSubmit={handleSubmit} className="space-y-5 py-2">
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-base font-medium">
+          Email
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="name@example.com"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            if (errors.email) setErrors({ ...errors, email: "" })
+          }}
+          disabled={isLoading}
+          className="h-11 px-4 text-base"
+        />
+        {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password" className="text-base font-medium">
+            Password
+          </Label>
+          <Button variant="link" className="p-0 h-auto text-sm" type="button">
+            Forgot password?
           </Button>
-        </form>
-      </CardContent>
-      <CardFooter className="flex justify-center">
-        <p className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <a href="#" className="text-primary">
-            Sign up
-          </a>
-        </p>
-      </CardFooter>
-    </Card>
+        </div>
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            if (errors.password) setErrors({ ...errors, password: "" })
+          }}
+          disabled={isLoading}
+          className="h-11 px-4 text-base"
+        />
+        {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
+      </div>
+
+      <div className="flex items-center space-x-2 py-1">
+        <Checkbox
+          id="remember"
+          checked={rememberMe}
+          onCheckedChange={setRememberMe}
+          disabled={isLoading}
+          className="h-5 w-5 rounded-sm border-2"
+        />
+        <Label htmlFor="remember" className="text-sm font-normal">
+          Remember me for 30 days
+        </Label>
+      </div>
+
+      <Button className="w-full h-11 text-base font-medium mt-2" type="submit" disabled={isLoading}>
+        {isLoading ? "Signing in..." : "Sign In"}
+      </Button>
+    </form>
   )
 }
 
 export default LoginForm
-

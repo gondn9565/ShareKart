@@ -1,6 +1,6 @@
 "use client"
 
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
@@ -14,30 +14,24 @@ import { Toaster } from "@/components/ui/sonner"
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const navigate = useNavigate() 
 
   useEffect(() => {
+    // Check if user is logged in from localStorage
     const userLoggedIn = localStorage.getItem("sharekart-user")
     if (userLoggedIn) {
       setIsLoggedIn(true)
     }
   }, [])
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/dashboard") 
-    }
-  }, [isLoggedIn, navigate]) 
-
   const handleLogin = () => {
+    // Mock login functionality
     localStorage.setItem("sharekart-user", JSON.stringify({ id: 1, name: "User" }))
-    setIsLoggedIn(true) 
+    setIsLoggedIn(true)
   }
 
   const handleLogout = () => {
     localStorage.removeItem("sharekart-user")
     setIsLoggedIn(false)
-    navigate("/login") 
   }
 
   return (

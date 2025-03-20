@@ -1,79 +1,147 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ShoppingBag, Recycle, DollarSign, Heart } from "lucide-react";
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
+import { ShoppingBag, Recycle, DollarSign, Heart, Store, Package, Tag, TrendingUp } from "lucide-react"
+import { useAuth } from "../context/AuthContext"
+import { useEffect, useState } from "react"
+import { hasFeature } from "../lib/flagsmith"
 
 function Home() {
+  const { userType } = useAuth()
+  const [showSellerFeatures, setShowSellerFeatures] = useState(false)
+
+  useEffect(() => {
+    const sellerFeaturesEnabled = hasFeature("seller_features")
+    setShowSellerFeatures(userType === "seller" && sellerFeaturesEnabled)
+  }, [userType])
+
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-white via-gray-100 to-gray-200 text-gray-900 overflow-hidden">
-      <div className="absolute inset-0 opacity-10 bg-[url('/ecommerce-bg.svg')] bg-cover bg-center"></div>
-      
-      <section className="relative z-10 py-16 md:py-24 lg:py-32 text-center">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500">
-            Welcome to ShareKart
+    <div className="min-h-screen bg-gradient-to-br from-[#EAE2FF] to-[#B8E0D2] text-gray-900">
+      {/* Hero Section */}
+      <section className="py-12 md:py-24 lg:py-32 text-center">
+        <div className="container px-4 md:px-6">
+          <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl text-gray-900">
+            {userType === "seller" ? "Sell Smarter on ShareKart" : "Welcome to ShareKart"}
           </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-700">
-            Buy, sell, and donate second-hand items in a seamless e-commerce experience.
+          <p className="mx-auto max-w-[700px] text-gray-700 md:text-xl mt-4">
+            {userType === "seller"
+              ? "List your items, attract buyers, and track sales effortlessly."
+              : "Discover great deals, buy pre-loved items, and contribute to sustainability."}
           </p>
-          <div className="mt-6 space-x-4">
-            <Button asChild size="lg" className="bg-blue-500 hover:bg-blue-400 shadow-lg shadow-blue-500/50 text-white">
-              <Link to="/shop">
-                <ShoppingBag className="mr-2 h-5 w-5" /> Browse Items
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-blue-500 text-blue-500 hover:text-blue-400 hover:border-blue-400">
-              <Link to="/dashboard">
-                <DollarSign className="mr-2 h-5 w-5" /> Sell Items
-              </Link>
-            </Button>
+          <div className="flex flex-wrap justify-center mt-6 space-x-4">
+            {userType === "seller" ? (
+              <>
+                <Button asChild size="lg" className="bg-[#6C63FF] text-white hover:bg-[#554FC3] rounded-full shadow-md">
+                  <Link to="/dashboard">
+                    <Store className="mr-2 h-4 w-4" />
+                    Manage Listings
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-gray-600 text-gray-900 hover:bg-gray-200 rounded-full shadow-md"
+                >
+                  <Link to="/dashboard?tab=add">
+                    <Tag className="mr-2 h-4 w-4" />
+                    Add New Listing
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild size="lg" className="bg-[#6C63FF] text-white hover:bg-[#554FC3] rounded-full shadow-md">
+                  <Link to="/shop">
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Browse Items
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </section>
-      
-      <section className="relative z-10 py-16">
-        <div className="container mx-auto px-6 grid gap-8 md:grid-cols-3">
-          {[{
-            icon: <Recycle className="h-10 w-10 text-green-500" />, title: "Sustainable Shopping",
-            desc: "Reduce waste by giving items a second life through our marketplace."
-          }, {
-            icon: <DollarSign className="h-10 w-10 text-blue-500" />, title: "Save Money",
-            desc: "Find quality second-hand items at a fraction of the original price."
-          }, {
-            icon: <Heart className="h-10 w-10 text-red-500" />, title: "Support Community",
-            desc: "Donate items to those in need or find free items from generous donors."
-          }].map((item, index) => (
-            <div key={index} className="p-6 rounded-lg shadow-xl bg-white backdrop-blur-lg border border-gray-300 hover:scale-105 transition-transform">
-              <div className="flex justify-center">{item.icon}</div>
-              <h3 className="mt-4 text-xl font-semibold text-gray-900">{item.title}</h3>
-              <p className="mt-2 text-gray-700">{item.desc}</p>
-            </div>
-          ))}
+
+      {/* Features Section */}
+      <section className="py-12 px-4 md:px-12">
+        <div className="container grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {userType === "seller" ? (
+            <>
+              <FeatureCard icon={<Package className="h-6 w-6 text-[#6C63FF]" />} title="Easy Listing">
+                List your products effortlessly with our simple interface.
+              </FeatureCard>
+              <FeatureCard icon={<TrendingUp className="h-6 w-6 text-[#6C63FF]" />} title="Sales Insights">
+                Get detailed analytics to improve your sales strategy.
+              </FeatureCard>
+              <FeatureCard icon={<Heart className="h-6 w-6 text-[#6C63FF]" />} title="Secure Transactions">
+                Ensure smooth and secure payments with integrated options.
+              </FeatureCard>
+            </>
+          ) : (
+            <>
+              <FeatureCard icon={<Recycle className="h-6 w-6 text-[#6C63FF]" />} title="Sustainable Shopping">
+                Buy second-hand and support a greener future.
+              </FeatureCard>
+              <FeatureCard icon={<DollarSign className="h-6 w-6 text-[#6C63FF]" />} title="Affordable Deals">
+                Find high-quality items at unbeatable prices.
+              </FeatureCard>
+              <FeatureCard icon={<Heart className="h-6 w-6 text-[#6C63FF]" />} title="Community Support">
+                Help others by donating items you no longer need.
+              </FeatureCard>
+            </>
+          )}
         </div>
       </section>
-      
-      <section id="about" className="relative z-10 py-16">
-        <div className="container mx-auto px-6 grid gap-12 lg:grid-cols-2">
+
+      {/* About Section */}
+      <section id="about" className="py-12 md:py-24">
+        <div className="container px-4 md:px-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-3xl font-bold text-blue-500">About ShareKart</h2>
-            <p className="mt-4 text-gray-700">
-              ShareKart was founded with a mission to create a seamless and sustainable e-commerce marketplace where people can easily buy, sell, and donate second-hand items.
+            <h2 className="text-3xl font-bold tracking-tighter mb-4 text-gray-900">About ShareKart</h2>
+            <p className="text-gray-700 mb-4">
+              ShareKart is a platform that makes buying and selling second-hand items easy and secure. Whether you're
+              looking for a great deal or a place to sell, we provide a seamless experience.
             </p>
-            <p className="mt-4 text-gray-700">
-              We aim to reduce waste, promote reuse, and foster community connections through our secure and user-friendly platform.
+            <p className="text-gray-700">
+              Join our growing community and contribute to a more sustainable way of shopping.
             </p>
           </div>
           <div className="flex items-center justify-center">
-            <div className="relative w-full max-w-md rounded-lg overflow-hidden shadow-lg">
-              <img src="/ecommerce-illustration.svg" alt="About ShareKart" className="object-cover w-full h-full rounded-lg" />
-            </div>
+            <img
+              src=""
+              alt="People exchanging second-hand items"
+              className="object-cover w-full max-w-md rounded-lg shadow-lg"
+            />
           </div>
         </div>
       </section>
+
+      {/* Minimal Footer */}
+      <footer className="mt-12 py-4 text-center text-sm text-gray-600 relative">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/4 border-t border-gray-400"></div>
+        &copy; {new Date().getFullYear()} ShareKart | Buy. Sell. Sustain.
+      </footer>
+
+
     </div>
-  );
+  )
 }
 
-export default Home;
+/* Feature Card Component */
+function FeatureCard({ icon, title, children }) {
+  return (
+    <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center text-center space-y-4 
+      transition-all duration-300 hover:shadow-2xl hover:bg-[#f7f7ff] hover:scale-105">
+      <div className="rounded-full bg-[#EAE2FF] p-4 shadow-md">{icon}</div>
+      <div className="space-y-2">
+        <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+        <p className="text-gray-700">{children}</p>
+      </div>
+    </div>
+  )
+}
 
 
-
+export default Home

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { isValidEmail } from "@/lib/utils"
 
-function SignUpForm({ onSignUp }) {
+function SignUpForm({ onSignUp, userType }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,22 +62,22 @@ function SignUpForm({ onSignUp }) {
     setIsLoading(true)
 
     try {
-      // Simulating API call
+      // Simulating a successful signup (Replace with real API call)
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
+      // Create a user object
       const user = {
         id: Date.now(),
         name: formData.name,
         email: formData.email,
       }
 
-      localStorage.setItem("sharekart-user", JSON.stringify(user))
+      // Call the onSignUp callback with the user data and type
+      onSignUp(user)
 
       toast.success("Account created!", {
-        description: "You have successfully signed up for ShareKart.",
+        description: `You have successfully signed up as a ${userType}.`,
       })
-
-      onSignUp()
     } catch (error) {
       toast.error("Sign up failed", {
         description: "There was a problem creating your account.",
@@ -155,7 +155,7 @@ function SignUpForm({ onSignUp }) {
       </div>
 
       <Button type="submit" className="w-full h-11 text-base font-medium mt-2" disabled={isLoading}>
-        {isLoading ? "Creating account..." : "Sign Up"}
+        {isLoading ? "Creating account..." : `Sign Up as ${userType === "buyer" ? "Buyer" : "Seller"}`}
       </Button>
     </form>
   )

@@ -43,7 +43,7 @@ function LoginForm({ onLogin }) {
       // Simulating a successful login (Replace with real API call)
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // Store user in localStorage
+      // Create a user object
       const user = {
         id: 1,
         name: "User",
@@ -51,20 +51,16 @@ function LoginForm({ onLogin }) {
         rememberMe: rememberMe,
       }
 
-      localStorage.setItem("sharekart-user", JSON.stringify(user))
+      // Call the onLogin callback with the user data
+      onLogin(user)
 
-      // If "Remember Me" is checked, set a longer expiration
-      const expiryTime = rememberMe
-        ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
-        : Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-
-      localStorage.setItem("sharekart-session-expiry", expiryTime.toString())
-
-      toast.success("Login successful! Welcome back to ShareKart!")
-
-      onLogin()
+      toast.success("Login successful", {
+        description: "Welcome back to ShareKart!",
+      })
     } catch (error) {
-      toast.error("Login failed! Invalid email or password. Please try again.")
+      toast.error("Login failed", {
+        description: "Invalid email or password. Please try again.",
+      })
     } finally {
       setIsLoading(false)
     }

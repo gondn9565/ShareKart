@@ -1,7 +1,6 @@
 "use client"
 
 import { Routes, Route, Navigate } from "react-router-dom"
-import { useEffect, useState } from "react"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
 import Shop from "./pages/Shop"
@@ -10,53 +9,14 @@ import Cart from "./pages/Cart"
 import NotFound from "./pages/NotFound"
 import Layout from "./components/Layout"
 import { CartProvider } from "./context/CartContext"
+import { AuthProvider, useAuth } from "./context/AuthContext"
 import { Toaster } from "@/components/ui/sonner"
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+// Protected route component
+function ProtectedRoute({ children }) {
+  const { user, isLoading } = useAuth()
 
-  useEffect(() => {
-    // Check if user is logged in from localStorage
-    const checkAuthStatus = () => {
-      const userLoggedIn = localStorage.getItem("sharekart-user")
-      const sessionExpiry = localStorage.getItem("sharekart-session-expiry")
-
-      if (userLoggedIn && sessionExpiry) {
-        // Check if session has expired
-        const expiryDate = new Date(sessionExpiry)
-        const now = new Date()
-
-        if (now < expiryDate) {
-          setIsLoggedIn(true)
-        } else {
-          // Session expired, clear localStorage
-          localStorage.removeItem("sharekart-user")
-          localStorage.removeItem("sharekart-session-expiry")
-          setIsLoggedIn(false)
-        }
-      } else {
-        setIsLoggedIn(false)
-      }
-
-      setIsCheckingAuth(false)
-    }
-
-    checkAuthStatus()
-  }, [])
-
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("sharekart-user")
-    localStorage.removeItem("sharekart-session-expiry")
-    setIsLoggedIn(false)
-  }
-
-  // Show loading state while checking authentication
-  if (isCheckingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>Loading...</p>
@@ -64,16 +24,27 @@ function App() {
     )
   }
 
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+
+  return children
+}
+
+// Main App component
+function AppContent() {
+  const { user, logout } = useAuth()
+
   return (
     <CartProvider>
       <Routes>
-        {!isLoggedIn ? (
+        {!user ? (
           <>
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route path="/login" element={<Login />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : (
-          <Route element={<Layout onLogout={handleLogout} />}>
+          <Route element={<Layout onLogout={logout} />}>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -85,6 +56,15 @@ function App() {
       </Routes>
       <Toaster />
     </CartProvider>
+  )
+}
+
+// Wrapper App component with providers
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 

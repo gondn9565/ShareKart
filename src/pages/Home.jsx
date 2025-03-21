@@ -99,10 +99,9 @@ function Home() {
       <section id="about" className="py-12 md:py-24">
         <div className="container px-4 md:px-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-3xl font-bold tracking-tighter mb-4 text-gray-900">About ShareKart</h2>
+            <h2 className="text-3xl font-bold tracking-tighter mb-4 text-gray-900">ShareKart – A Platform for Selling and Donating Second-Hand Items</h2>
             <p className="text-gray-700 mb-4">
-              ShareKart is a platform that makes buying and selling second-hand items easy and secure. Whether you're
-              looking for a great deal or a place to sell, we provide a seamless experience.
+            ShareKart is an innovative online platform that enables users to both sell and donate second-hand items, making essential products more accessible to those in need. Whether you want to give away unused items for a good cause or sell them at an affordable price, ShareKart provides a seamless and user-friendly experience
             </p>
             <p className="text-gray-700">
               Join our growing community and contribute to a more sustainable way of shopping.
@@ -110,7 +109,7 @@ function Home() {
           </div>
           <div className="flex items-center justify-center">
             <img
-              src=""
+              src="src/assets/images/second-hand-business-removebg-preview.png"
               alt="People exchanging second-hand items"
               className="object-cover w-full max-w-md rounded-lg shadow-lg"
             />

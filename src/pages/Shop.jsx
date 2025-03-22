@@ -96,7 +96,7 @@ const mockProducts=[
   {
     id: 9,
     name: "Smartwatch",
-    description: "smartwatch.",
+    description: "2-year old smartwatch in good condition",
     price: 45.0,
     condition: "Good",
     category: "Games",
@@ -106,7 +106,7 @@ const mockProducts=[
   {
     id: 10,
     name: "Bedsheet",
-    description: "Collection of bedsheet.",
+    description: "1.5-year old bedsheet in better condition",
     price: 45.0,
     condition: "Good",
     category: "Games",
@@ -116,7 +116,7 @@ const mockProducts=[
   {
     id: 11,
     name: "Penholders",
-    description: "Collection of penholder.",
+    description: "5-month old penholder in better condition",
     price: 45.0,
     condition: "Good",
     category: "Games",
@@ -126,7 +126,7 @@ const mockProducts=[
   {
     id: 12,
     name: "stationary stuff",
-    description: "Collection of stationary stuff.",
+    description: "1-month old stationary stuff in use",
     price: 45.0,
     condition: "Good",
     category: "Games",

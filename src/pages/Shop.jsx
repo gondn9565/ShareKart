@@ -94,7 +94,7 @@ const mockProducts=[
     isDonation: false,
   },
   {
-    id: 8,
+    id: 9,
     name: "Smartwatch",
     description: "smartwatch.",
     price: 45.0,
@@ -104,7 +104,7 @@ const mockProducts=[
     isDonation: false,
   },
   {
-    id: 8,
+    id: 10,
     name: "Bedsheet",
     description: "Collection of bedsheet.",
     price: 45.0,
@@ -114,7 +114,7 @@ const mockProducts=[
     isDonation: false,
   },
   {
-    id: 8,
+    id: 11,
     name: "Penholders",
     description: "Collection of penholder.",
     price: 45.0,
@@ -124,7 +124,7 @@ const mockProducts=[
     isDonation: false,
   },
   {
-    id: 8,
+    id: 12,
     name: "stationary stuff",
     description: "Collection of stationary stuff.",
     price: 45.0,

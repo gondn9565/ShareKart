@@ -48,6 +48,14 @@ npm run dev
 ```
 The project will run at http://localhost:5173
 
+
+##Demo
+
+
+https://github.com/user-attachments/assets/bc21fb46-5ef1-4590-867d-86fcd655c78c
+
+
+
 ## **🛒 How It Works?**
 1. **Sign up/Login** – Join as a buyer, seller, or donor
 2. **Browse Listings** – Find second-hand items at low or no cost

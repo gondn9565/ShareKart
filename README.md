@@ -1,5 +1,9 @@
 # **🛒 ShareKart – Buy, Sell & Donate with Ease**  
 
+<p align="center">
+  <img src="src/assets/images/ShareKart.png" alt="ShareKart Banner" width="750" height="400">
+</p>
+
 
 ## **🔹 Introduction**  
 **ShareKart** is a platform to **buy, sell, and donate** pre-owned items at minimal or no cost. Whether it’s **stationery, books, clothes, or essentials**, ShareKart connects those who have with those who need.  

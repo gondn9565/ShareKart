@@ -49,10 +49,9 @@ npm run dev
 The project will run at http://localhost:5173
 
 
-##Demo
 
 
-https://github.com/user-attachments/assets/bc21fb46-5ef1-4590-867d-86fcd655c78c
+
 
 
 
